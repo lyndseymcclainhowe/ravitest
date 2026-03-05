@@ -7,7 +7,7 @@
         <title>Hello World!</title>
     </head>
     <body>
-        <link rel="stylesheet" href="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/themes/df-messenger-default.css">
+<link rel="stylesheet" href="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/themes/df-messenger-default.css">
 <script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js"></script>
 
       <!-- Widget JavaScript bundle -->
@@ -41,6 +41,79 @@
 --df-messenger-chat-bubble-icon-color: #DE9027;   /* Color of the icon */
 }
 
+ /* Greeting bubble beside launcher icon */
+      #mary-greeting {
+        position: fixed;
+        bottom: 28px; /* aligns vertically with the chat icon */
+        right: 82px; /* positions just left of the launcher bubble */
+        background: #06284C;
+        color: white;
+        font-size: 14px;
+        font-family: "Inter", sans-serif;
+        padding: 8px 14px;
+        border-radius: 18px;
+    /*    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);*/
+        z-index: 9999;
+        white-space: nowrap;
+        animation: fadeIn 0.5s ease-out;
+        display: none;
+        align-items: center;
+        gap: 6px;
+      }
+
+      /* When chat is open */
+#mary-greeting.chat-open {
+  background: #ffffff;
+  color: #06284C; /* text readable on white */
+}
+
+       Chat tail pointer 
+      #mary-greeting::after {
+        content: "";
+        position: absolute;
+        bottom: 10px;
+        right: -7px;
+        width: 0;
+        height: 0;
+        border-left: 8px solid #06284C;
+        border-top: 8px solid transparent;
+        border-bottom: 8px solid transparent;
+      }
+      /* Tail when chat is open */
+#mary-greeting.chat-open::after {
+  border-left-color: #ffffff;
+}
+
+
 </style>
+
+<script>
+        // Create and show the greeting bubble
+      const greeting = document.createElement("div");
+      greeting.id = "mary-greeting";
+      greeting.textContent = "How can I help you today? 👋";
+      document.body.appendChild(greeting);
+        let cnt = "first";
+
+// Show greeting
+function showGreeting() {
+  greeting.style.display = "flex";     // allow paint
+  greeting.style.opacity = "1";
+}
+
+// Hide greeting (fully removes tail)
+function hideGreeting() {
+  greeting.style.opacity = "0";
+
+  // after fade-out, remove from layout
+  setTimeout(() => {
+    greeting.style.display = "none";
+  }, 400);
+}
+
+function botOpenedInSession() {
+  return sessionStorage.getItem("dfChatOpened") === "true";
+}
+</script>
      </body> 
 </html>
