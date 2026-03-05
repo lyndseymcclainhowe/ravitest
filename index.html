@@ -249,20 +249,9 @@ const hasStaticQuestion = (() => {
     return;
   }
 
-  /* ---- CHIPS OR QUESTIONS: hide thumbs ONLY ---- */
-  if (hasChips ||hasStaticQuestion) {
-    messenger.setAttribute('allow-feedback', 'none');
-  } else {
-    messenger.setAttribute('allow-feedback', 'all');
-  }
-});
 
-  
-  addEventListener('df-session-expired', () => {
-    messenger.renderCustomText('*Session closed. Please refresh.*', 1);
-    document.querySelector('df-messenger-chat-bubble').closeChat();
-  });
 </script>
+
 
      </body> 
 </html>
