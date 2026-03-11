@@ -159,35 +159,6 @@ const observer = new MutationObserver(() => {
 
     }
   });
-
-  addEventListener('df-chat-open-changed', e => {
-    if (e.detail.isOpen) {
-      suppressWelcome = true;
-      messenger.startNewSession({ retainHistory: 0 });
-      messenger.sendRequest('event', 'dos-welcome-message');
-      greeting.textContent = "";
-      greeting.classList.add("chat-open");
-      hideGreeting();
-    sessionStorage.setItem("dfChatOpened", "true");
-    }
-    else {
-      setTimeout(() => {
-        messenger.startNewSession({ retainHistory: 1 });
-      }, 3000);
-      greeting.classList.remove("chat-open"); //  back to blue
-      greeting.textContent = "DEV Chat";
-     setTimeout(showGreeting,3000);
-  
-    }
-  });
-});
-  // Start observing
-observer.observe(document.body, {
-  childList: true,
-  subtree: true
-});
 </script>
-
-
     </body> 
 </html>
