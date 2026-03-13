@@ -9,20 +9,20 @@
     <body>
 		<link rel="stylesheet" href="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/themes/df-messenger-default.css%22>
 <script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js"></script>
-   
-   <!-- Widget JavaScript bundle -->
+
+      <!-- Widget JavaScript bundle -->
   <script src="https://cloud.google.com/ai/gen-app-builder/client?hl=en_US"></script>
   
 <df-messenger
   location="us-central1"
-  project-id="aw-hipaa-okhca-ccai-np"
-  agent-id="7afa84b0-7fe1-4eee-94bb-f8e77a93c41f"
+  project-id="aw-hipaa-okhca-ccai-t"
+  agent-id="275630df-96e0-4826-82d7-2630ec71f2f7"
   language-code="en"
   max-query-length="-1">
-   <df-messenger-chat-bubble
-    chat-title="OKHCA-DEV">
-	 <df-messenger-chat-bubblechat-bubble-text="DEV Chat"></df-messenger-chat-bubblechat-bubble-text>>
-   </df-messenger-chat-bubble>
+	<df-messenger-chat-bubble
+		chat-title="OKHCA-TEST">
+		   <df-messenger-chat-bubblechat-bubble-text="TEST Chat"></df-messenger-chat-bubblechat-bubble-text>>
+	</df-messenger-chat-bubble>
 </df-messenger>
 
 <style>
@@ -37,16 +37,16 @@
     bottom: 16px;
     right: 16px;
 
-  
+ 
   /* Chat Bubble Styling */
---df-messenger-chat-bubble-icon-color: #D15420;   /* Color of the icon */
+--df-messenger-chat-bubble-icon-color: #DE9027;   /* Color of the icon */
 }
    /* Greeting bubble beside launcher icon */
       #mary-greeting {
         position: fixed;
         bottom: 28px; /* aligns vertically with the chat icon */
         right: 82px; /* positions just left of the launcher bubble */
-        background: #D15420;
+        background: #DE9027;
         color: white;
         font-size: 14px;
         font-family: "Inter", sans-serif;
@@ -90,7 +90,7 @@
         // Create and show the greeting bubble
       const greeting = document.createElement("div");
       greeting.id = "mary-greeting";
-      greeting.textContent = "DEV Chat";
+      greeting.textContent = "TEST Chat";
       document.body.appendChild(greeting);
         let cnt = "first";
 
@@ -159,6 +159,111 @@ const observer = new MutationObserver(() => {
 
     }
   });
+
+  addEventListener('df-chat-open-changed', e => {
+    if (e.detail.isOpen) {
+      suppressWelcome = true;
+      messenger.startNewSession({ retainHistory: 0 });
+      messenger.sendRequest('event', 'dos-welcome-message');
+      greeting.textContent = "";
+      greeting.classList.add("chat-open");
+      hideGreeting();
+    sessionStorage.setItem("dfChatOpened", "true");
+    }
+    else {
+      setTimeout(() => {
+        messenger.startNewSession({ retainHistory: 1 });
+      }, 3000);
+      greeting.classList.remove("chat-open"); //  back to blue
+      greeting.textContent = "TEST Chat";
+     setTimeout(showGreeting,3000);
+  
+    }
+  });
+});
+  // Start observing
+observer.observe(document.body, {
+  childList: true,
+  subtree: true
+});
+/* ---------- Response handling ---------- */
+addEventListener('df-response-received', event => {
+  const messages = event.detail?.data?.messages || [];
+
+  const hasChips = messages.some(m =>
+    m.type === 'chips' ||
+    m.type === 'suggestion_chips' ||
+    m.type === 'quickReplies'
+  );
+
+  //  Add your static questions here (case-insensitive)
+ const STATIC_QUESTIONS = [
+  'i apologize, but my area of focus is',
+  'sorry something went wrong',
+  'could you please rephrase your question',
+  'Welcome. I am the Department of',
+  'Welcome',
+  'sorry can you rephrase.',
+  'Please rephrase your question.',
+  'What specifically can I help you with today'
+];
+
+const hasStaticQuestion = (() => {
+  // Combine all text parts from this response
+  const allText = messages
+    .filter(m => m.type === 'text')
+    .map(m => {
+      if (typeof m.text === 'string') return m.text;
+      if (Array.isArray(m.text?.text)) return m.text.text.join(' ');
+      if (Array.isArray(m.text)) return m.text.join(' ');
+      return '';
+    })
+    .join(' ')
+    .toLowerCase()
+    .replace(/[’']/g, "'")
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (!allText) return false;
+
+  return STATIC_QUESTIONS.some(fragment => allText.includes(fragment));
+})();
+
+  /* ---- WELCOME: suppress rendering + thumbs ---- */
+  if (suppressWelcome) {
+    event.preventDefault();
+
+    messages.forEach(m => {
+      if (m.type === 'text') {
+        const text =
+          typeof m.text === 'string'
+            ? m.text
+            : Array.isArray(m.text?.text)
+              ? m.text.text.join(' ')
+              : '';
+
+        messenger.renderCustomText(text, { allowFeedback: false });
+      }
+    });
+
+    suppressWelcome = false;
+    return;
+  }
+
+  /* ---- CHIPS OR QUESTIONS: hide thumbs ONLY ---- */
+  if (hasChips ||hasStaticQuestion) {
+    messenger.setAttribute('allow-feedback', 'none');
+  } else {
+    messenger.setAttribute('allow-feedback', 'all');
+  }
+});
+
+  
+  addEventListener('df-session-expired', () => {
+    messenger.renderCustomText('*Session closed. Please refresh.*', 1);
+    document.querySelector('df-messenger-chat-bubble').closeChat();
+  });
 </script>
+
     </body> 
 </html>
