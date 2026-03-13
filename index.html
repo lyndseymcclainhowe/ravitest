@@ -7,7 +7,7 @@
         <title>Hello World!</title>
     </head>
     <body>
-	<link rel="stylesheet" href="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/themes/df-messenger-default.css%22>
+<link rel="stylesheet" href="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/themes/df-messenger-default.css%22>
 <script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js"></script>
 <script src="https://cloud.google.com/ai/gen-app-builder/client?hl=en_US"></script>
   
@@ -102,14 +102,6 @@ function botOpenedInSession() {
   return sessionStorage.getItem("dfChatOpened") === "true";
 }
 
-// Immediately hide greeting if bot opened before in this tab
-if (botOpenedInSession()) {
-  hideGreeting();
-} else {
-  showGreeting();
-}
-
-  
   let suppressNextResponse = false;
    let suppressWelcome = false;
 
