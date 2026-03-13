@@ -180,27 +180,6 @@ addEventListener('df-response-received', event => {
     m.type === 'quickReplies'
   );
 
-  /* ---- WELCOME: suppress rendering + thumbs ---- */
-  if (suppressWelcome) {
-    event.preventDefault();
-
-    messages.forEach(m => {
-      if (m.type === 'text') {
-        const text =
-          typeof m.text === 'string'
-            ? m.text
-            : Array.isArray(m.text?.text)
-              ? m.text.text.join(' ')
-              : '';
-
-        messenger.renderCustomText(text, { allowFeedback: false });
-      }
-    });
-
-    suppressWelcome = false;
-    return;
-  }
-
   /* ---- CHIPS OR QUESTIONS: hide thumbs ONLY ---- */
   if (hasChips ||hasStaticQuestion) {
     messenger.setAttribute('allow-feedback', 'none');
@@ -215,6 +194,5 @@ addEventListener('df-response-received', event => {
     document.querySelector('df-messenger-chat-bubble').closeChat();
   });
 </script>
-
     </body> 
 </html>
