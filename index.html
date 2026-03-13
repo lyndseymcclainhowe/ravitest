@@ -102,8 +102,12 @@ function botOpenedInSession() {
   return sessionStorage.getItem("dfChatOpened") === "true";
 }
 
-  let suppressNextResponse = false;
-   let suppressWelcome = false;
+// Immediately hide greeting if bot opened before in this tab
+if (botOpenedInSession()) {
+  hideGreeting();
+} else {
+  showGreeting();
+}
 
   const messenger = document.querySelector('df-messenger');
 
