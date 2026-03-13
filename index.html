@@ -181,7 +181,7 @@ addEventListener('df-response-received', event => {
   );
  
  /* ---- CHIPS OR QUESTIONS: hide thumbs ONLY ---- */
-  if (hasChips ||hasStaticQuestion) {
+  if (hasChips) {
     messenger.setAttribute('allow-feedback', 'none');
   } else {
     messenger.setAttribute('allow-feedback', 'all');
