@@ -7,7 +7,7 @@
         <title>Hello World!</title>
     </head>
     <body>
-		<link rel="stylesheet" href="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/themes/df-messenger-default.css%22>
+	<link rel="stylesheet" href="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/themes/df-messenger-default.css%22>
 <script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js"></script>
 
       <!-- Widget JavaScript bundle -->
@@ -164,7 +164,7 @@ const observer = new MutationObserver(() => {
     if (e.detail.isOpen) {
       suppressWelcome = true;
       messenger.startNewSession({ retainHistory: 0 });
-      messenger.sendRequest('event', 'dos-welcome-message');
+      messenger.sendRequest('event', 'welcome-message');
       greeting.textContent = "";
       greeting.classList.add("chat-open");
       hideGreeting();
@@ -198,14 +198,7 @@ addEventListener('df-response-received', event => {
 
   //  Add your static questions here (case-insensitive)
  const STATIC_QUESTIONS = [
-  'i apologize, but my area of focus is',
-  'sorry something went wrong',
-  'could you please rephrase your question',
-  'Welcome. I am the Department of',
-  'Welcome',
-  'sorry can you rephrase.',
-  'Please rephrase your question.',
-  'What specifically can I help you with today'
+    'What specifically can I help you with today'
 ];
 
 const hasStaticQuestion = (() => {
@@ -264,6 +257,5 @@ const hasStaticQuestion = (() => {
     document.querySelector('df-messenger-chat-bubble').closeChat();
   });
 </script>
-
     </body> 
 </html>
