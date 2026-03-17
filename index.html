@@ -9,18 +9,18 @@
     <body>
 <link rel="stylesheet" href="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/themes/df-messenger-default.css%22>
 <script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js"></script>
-<script src="https://cloud.google.com/ai/gen-app-builder/client?hl=en_US"></script>
+ <script src="https://cloud.google.com/ai/gen-app-builder/client?hl=en_US"></script>
   
 <df-messenger
   location="us-central1"
-  project-id="aw-hipaa-okhca-ccai-np"
-  agent-id="7afa84b0-7fe1-4eee-94bb-f8e77a93c41f"
+  project-id="aw-hipaa-okhca-ccai-t"
+  agent-id="275630df-96e0-4826-82d7-2630ec71f2f7"
   language-code="en"
   max-query-length="-1">
-   <df-messenger-chat-bubble
-    chat-title="OKHCA-DEV">
-	 <df-messenger-chat-bubblechat-bubble-text="DEV Chat"></df-messenger-chat-bubblechat-bubble-text>>
-   </df-messenger-chat-bubble>
+	<df-messenger-chat-bubble
+		chat-title="OKHCA-TEST">
+		   <df-messenger-chat-bubblechat-bubble-text="TEST Chat"></df-messenger-chat-bubblechat-bubble-text>>
+	</df-messenger-chat-bubble>
 </df-messenger>
 
 <style>
@@ -37,14 +37,14 @@
 
   
   /* Chat Bubble Styling */
---df-messenger-chat-bubble-icon-color: #D15420;   /* Color of the icon */
+--df-messenger-chat-bubble-icon-color: #DE9027;   /* Color of the icon */
 }
    /* Greeting bubble beside launcher icon */
       #mary-greeting {
         position: fixed;
         bottom: 28px; /* aligns vertically with the chat icon */
         right: 82px; /* positions just left of the launcher bubble */
-        background: #D15420;
+        background: #DE9027;
         color: white;
         font-size: 14px;
         font-family: "Inter", sans-serif;
@@ -78,7 +78,7 @@
         // Create and show the greeting bubble
       const greeting = document.createElement("div");
       greeting.id = "mary-greeting";
-      greeting.textContent = "DEV Chat";
+      greeting.textContent = "TEST Chat";
       document.body.appendChild(greeting);
         let cnt = "first";
 
@@ -159,7 +159,7 @@ const observer = new MutationObserver(() => {
         messenger.startNewSession({ retainHistory: 1 });
       }, 3000);
       greeting.classList.remove("chat-open"); 
-      greeting.textContent = "DEV Chat";
+      greeting.textContent = "TEST Chat";
      setTimeout(showGreeting,3000);
   
     }
@@ -181,7 +181,7 @@ addEventListener('df-response-received', event => {
   );
  
  /* ---- CHIPS OR QUESTIONS: hide thumbs ONLY ---- */
-  if (hasChips) {
+  if (hasChips ||hasStaticQuestion) {
     messenger.setAttribute('allow-feedback', 'none');
   } else {
     messenger.setAttribute('allow-feedback', 'all');
