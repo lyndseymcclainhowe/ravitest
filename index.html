@@ -180,7 +180,31 @@ addEventListener('df-response-received', event => {
     m.type === 'quickReplies'
   );
 
+  //  Add your static questions here (case-insensitive)
+ const STATIC_QUESTIONS = [
+  'What specifically can I help you with today'
+];
 
+const hasStaticQuestion = (() => {
+  // Combine all text parts from this response
+  const allText = messages
+    .filter(m => m.type === 'text')
+    .map(m => {
+      if (typeof m.text === 'string') return m.text;
+      if (Array.isArray(m.text?.text)) return m.text.text.join(' ');
+      if (Array.isArray(m.text)) return m.text.join(' ');
+      return '';
+    })
+    .join(' ')
+    .toLowerCase()
+    .replace(/[’']/g, "'")
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (!allText) return false;
+
+  return STATIC_QUESTIONS.some(fragment => allText.includes(fragment));
+})();
 
   /* ---- WELCOME: suppress rendering + thumbs ---- */
   if (suppressWelcome) {
@@ -217,6 +241,7 @@ addEventListener('df-response-received', event => {
     document.querySelector('df-messenger-chat-bubble').closeChat();
   });
 </script>
+
 
 
     </body> 
