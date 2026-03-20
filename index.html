@@ -69,6 +69,7 @@
 
 </style>
 
+
 <script>
         // Create and show the greeting bubble
       const greeting = document.createElement("div");
@@ -103,6 +104,10 @@ if (botOpenedInSession()) {
 } else {
   showGreeting();
 }
+
+  
+  let suppressNextResponse = false;
+   let suppressWelcome = false;
 
   const messenger = document.querySelector('df-messenger');
 
@@ -153,7 +158,7 @@ const observer = new MutationObserver(() => {
       setTimeout(() => {
         messenger.startNewSession({ retainHistory: 1 });
       }, 3000);
-      greeting.classList.remove("chat-open"); 
+      greeting.classList.remove("chat-open"); // 
       greeting.textContent = "DEV Chat";
      setTimeout(showGreeting,3000);
   
@@ -174,8 +179,31 @@ addEventListener('df-response-received', event => {
     m.type === 'suggestion_chips' ||
     m.type === 'quickReplies'
   );
- 
- /* ---- CHIPS OR QUESTIONS: hide thumbs ONLY ---- */
+
+
+
+  /* ---- WELCOME: suppress rendering + thumbs ---- */
+  if (suppressWelcome) {
+    event.preventDefault();
+
+    messages.forEach(m => {
+      if (m.type === 'text') {
+        const text =
+          typeof m.text === 'string'
+            ? m.text
+            : Array.isArray(m.text?.text)
+              ? m.text.text.join(' ')
+              : '';
+
+        messenger.renderCustomText(text, { allowFeedback: false });
+      }
+    });
+
+    suppressWelcome = false;
+    return;
+  }
+
+  /* ---- CHIPS OR QUESTIONS: hide thumbs ONLY ---- */
   if (hasChips ||hasStaticQuestion) {
     messenger.setAttribute('allow-feedback', 'none');
   } else {
@@ -183,12 +211,13 @@ addEventListener('df-response-received', event => {
   }
 });
 
- 
+  
   addEventListener('df-session-expired', () => {
     messenger.renderCustomText('*Session closed. Please refresh.*', 1);
     document.querySelector('df-messenger-chat-bubble').closeChat();
   });
 </script>
+
 
     </body> 
 </html>
