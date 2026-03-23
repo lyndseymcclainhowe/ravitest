@@ -11,6 +11,8 @@
 <script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js"></script>
 <script src="https://cloud.google.com/ai/gen-app-builder/client?hl=en_US"></script>
 
+
+
 <df-messenger
   location="us-central1"
   project-id="aw-hipaa-okhca-ccai-np"
@@ -19,6 +21,7 @@
   max-query-length="-1">
   <df-messenger-chat-bubble
     chat-title="OKHCA-DEV">
+	 <df-messenger-chat-bubblechat-bubble-text="DEV Chat"></df-messenger-chat-bubblechat-bubble-text>>
   </df-messenger-chat-bubble>
 </df-messenger>
 <style>
@@ -55,6 +58,14 @@
         align-items: center;
         gap: 6px;
       }
+	  
+	  
+      /* When chat is open */
+#mary-greeting.chat-open {
+  background: #ffffff;
+  color: #06284C; /* text readable on white */
+}
+
 
        Chat tail pointer 
       #mary-greeting::after {
@@ -105,6 +116,9 @@ if (botOpenedInSession()) {
 } else {
   showGreeting();
 }
+
+  let suppressNextResponse = false;
+   let suppressWelcome = false;
 
   const messenger = document.querySelector('df-messenger');
 
@@ -191,9 +205,6 @@ addEventListener('df-response-received', event => {
     document.querySelector('df-messenger-chat-bubble').closeChat();
   });
 </script>
-
-
-
 
     </body> 
 </html>
