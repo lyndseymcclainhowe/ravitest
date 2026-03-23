@@ -9,6 +9,8 @@
     <body>
 <link rel="stylesheet" href="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/themes/df-messenger-default.css">
 <script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js"></script>
+<script src="https://cloud.google.com/ai/gen-app-builder/client?hl=en_US"></script>
+
 <df-messenger
   location="us-central1"
   project-id="aw-hipaa-okhca-ccai-np"
@@ -30,8 +32,166 @@
     --df-messenger-message-bot-background: #fff;
     bottom: 16px;
     right: 16px;
-  }
+  
+   /* Chat Bubble Styling */
+--df-messenger-chat-bubble-icon-color: #D15420;   /* Color of the icon */
+}
+   /* Greeting bubble beside launcher icon */
+      #mary-greeting {
+        position: fixed;
+        bottom: 28px; /* aligns vertically with the chat icon */
+        right: 82px; /* positions just left of the launcher bubble */
+        background: #D15420;
+        color: white;
+        font-size: 14px;
+        font-family: "Inter", sans-serif;
+        padding: 8px 14px;
+        border-radius: 18px;
+    /*    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);*/
+        z-index: 9999;
+        white-space: nowrap;
+        animation: fadeIn 0.5s ease-out;
+        display: none;
+        align-items: center;
+        gap: 6px;
+      }
+
+       Chat tail pointer 
+      #mary-greeting::after {
+        content: "";
+        position: absolute;
+        bottom: 10px;
+        right: -7px;
+        width: 0;
+        height: 0;
+        border-left: 8px solid #06284C;
+        border-top: 8px solid transparent;
+        border-bottom: 8px solid transparent;
+      }
+
 </style>
+
+<script>
+        // Create and show the greeting bubble
+      const greeting = document.createElement("div");
+      greeting.id = "mary-greeting";
+      greeting.textContent = "DEV Chat";
+      document.body.appendChild(greeting);
+        let cnt = "first";
+
+// Show greeting
+function showGreeting() {
+  greeting.style.display = "flex";     // allow paint
+  greeting.style.opacity = "1";
+}
+
+// Hide greeting (fully removes tail)
+function hideGreeting() {
+  greeting.style.opacity = "0";
+
+  // after fade-out, remove from layout
+  setTimeout(() => {
+    greeting.style.display = "none";
+  }, 400);
+}
+
+function botOpenedInSession() {
+  return sessionStorage.getItem("dfChatOpened") === "true";
+}
+
+// Immediately hide greeting if bot opened before in this tab
+if (botOpenedInSession()) {
+  hideGreeting();
+} else {
+  showGreeting();
+}
+
+  const messenger = document.querySelector('df-messenger');
+
+  // Enable feedback globally (required)
+  messenger.setAttribute('allow-feedback', 'none');
+
+/* ---------- CSS to hide thumbs ---------- */
+  const style = document.createElement('style');
+  style.textContent = `
+    df-messenger[hide-thumbs]::part(thumbs) {
+      display: none !important;
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Observe DOM until df-messenger is available
+const observer = new MutationObserver(() => {
+  const dfMessenger = document.querySelector("df-messenger");
+  if (!dfMessenger) return;
+
+  // Stop observing once found
+  observer.disconnect();
+
+  // Wait for messenger to fully load
+  addEventListener("df-messenger-loaded", () => {
+
+    // If chat was opened before OR is currently open → keep greeting hidden
+    if (dfMessenger.opened) {
+    greeting.textContent = "";
+      hideGreeting();
+          // Mark as opened across tabs
+      sessionStorage.setItem("dfChatOpened", "true");
+
+    }
+  });
+
+  addEventListener('df-chat-open-changed', e => {
+    if (e.detail.isOpen) {
+      suppressWelcome = true;
+      messenger.startNewSession({ retainHistory: 0 });
+      messenger.sendRequest('event', 'welcome-message');
+      greeting.textContent = "";
+      greeting.classList.add("chat-open");
+      hideGreeting();
+    sessionStorage.setItem("dfChatOpened", "true");
+    }
+    else {
+      setTimeout(() => {
+        messenger.startNewSession({ retainHistory: 1 });
+      }, 3000);
+      greeting.classList.remove("chat-open"); 
+      greeting.textContent = "DEV Chat";
+     setTimeout(showGreeting,3000);
+  
+    }
+  });
+});
+  // Start observing
+observer.observe(document.body, {
+  childList: true,
+  subtree: true
+});
+/* ---------- Response handling ---------- */
+addEventListener('df-response-received', event => {
+  const messages = event.detail?.data?.messages || [];
+
+  const hasChips = messages.some(m =>
+    m.type === 'chips' ||
+    m.type === 'suggestion_chips' ||
+    m.type === 'quickReplies'
+  );
+ 
+ /* ---- CHIPS OR QUESTIONS: hide thumbs ONLY ---- */
+  if (hasChips ||hasStaticQuestion) {
+    messenger.setAttribute('allow-feedback', 'none');
+  } else {
+    messenger.setAttribute('allow-feedback', 'all');
+  }
+});
+
+ 
+  addEventListener('df-session-expired', () => {
+    messenger.renderCustomText('*Session closed. Please refresh.*', 1);
+    document.querySelector('df-messenger-chat-bubble').closeChat();
+  });
+</script>
+
 
 
 
