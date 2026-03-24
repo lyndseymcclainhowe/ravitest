@@ -2,8 +2,8 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+          <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Hello World!</title>
 
 <link rel="stylesheet" href="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/themes/df-messenger-default.css">
@@ -23,20 +23,21 @@
 	 <df-messenger-chat-bubblechat-bubble-text="DEV Chat"></df-messenger-chat-bubblechat-bubble-text>>
   </df-messenger-chat-bubble>
 </df-messenger>
+
 <style>
   df-messenger {
     z-index: 999;
     position: fixed;
-    --df-messenger-font-color: #000;
-    --df-messenger-font-family: Google Sans;
-    --df-messenger-chat-background: #f3f6fc;
-    --df-messenger-message-user-background: #d3e3fd;
-    --df-messenger-message-bot-background: #fff;
     bottom: 16px;
     right: 16px;
   
    /* Chat Bubble Styling */
 --df-messenger-chat-bubble-icon-color: #D15420;   /* Color of the icon */
+    --df-messenger-font-color: #000;
+    --df-messenger-font-family: Google Sans;
+    --df-messenger-chat-background: #f3f6fc;
+    --df-messenger-message-user-background: #d3e3fd;
+    --df-messenger-message-bot-background: #fff;
 }
    /* Greeting bubble beside launcher icon */
       #mary-greeting {
@@ -78,10 +79,6 @@
         border-top: 8px solid transparent;
         border-bottom: 8px solid transparent;
       }
-      /* Tail when chat is open */
-#mary-greeting.chat-open::after {
-  border-left-color: #ffffff;
-}
 
 </style>
 
@@ -119,6 +116,7 @@ if (botOpenedInSession()) {
 } else {
   showGreeting();
 }
+
 
   let suppressNextResponse = false;
    let suppressWelcome = false;
