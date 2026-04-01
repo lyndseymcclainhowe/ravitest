@@ -27,5 +27,24 @@
     right: 16px;
   }
 </style>
+
+   <script>
+  window.addEventListener('df-chat-open-changed', (event) => {
+    // Check if the chat is actually open (true)
+    if (event.detail.isOpen) {
+      console.log('Chat opened. Triggering welcome event.');
+
+      // 1. Select the messenger element
+      const dfMessenger = document.querySelector('df-messenger');
+
+      // 2. Start a new session 
+      dfMessenger.startNewSession({ retainHistory: false });
+
+      // 3. Send the custom event to Dialogflow
+      dfMessenger.sendRequest('event', 'auto_welcome_message');
+    }
+  });
+</script>
+
 </head>
 </html>
